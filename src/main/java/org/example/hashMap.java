@@ -1,6 +1,74 @@
 package org.example;
 
-public class hashMap<K, V> {
+
+import java.security.Key;
+import java.util.Iterator;
+
+public class hashMap<K, V> implements Iterable<hashMap.Entity>{
+    @Override
+    public String toString() {
+        String string = "";
+        for (int i = 0; i < buckets.length; i++) {
+            if (buckets[i] != null) {
+                Bucket bucket = buckets[i];
+                Bucket.Node node = bucket.head;
+                while (node != null){
+                    string = string + "Key: " + bucket.head.value.key + " Value: " + bucket.head.value.value + " ";
+                    node = node.next;
+                }
+            }
+            if (buckets[i] != null) {
+                string = string + "\n";
+            }
+
+        }
+        return string;
+    }
+
+    @Override
+    public Iterator<hashMap.Entity> iterator() {
+        return new HashMapIterator(buckets);
+    }
+
+    class HashMapIterator implements Iterator<hashMap.Entity>{
+        private int currentIndex;
+        private Bucket.Node currentNode;
+        private Bucket[] buckets;
+
+        public HashMapIterator(Bucket[] buckets) {
+            this.buckets = buckets;
+            this.currentNode = buckets[currentIndex].head;
+            this.currentIndex = 0;
+        }
+
+        @Override
+        public boolean hasNext() {
+            if (currentIndex < buckets.length) {
+                return true;
+            }
+            return false;
+        }
+
+        @Override
+        public Entity next() {
+            Entity e;
+            if (buckets[currentIndex] != null) {
+                if (currentNode != null) {
+                    e = currentNode.value;
+                    currentNode = currentNode.next;
+                    return e;
+                } else {
+                    currentNode = buckets[currentIndex++].head;
+                    Entity entity = new Entity((K) "null",(V) "null");
+                    return entity;
+                }
+            } else {
+                currentIndex++;
+                Entity entity = new Entity((K) "null",(V) "null");
+                return entity;
+            }
+        }
+    }
 
     //region Публичные методы
 
@@ -86,15 +154,16 @@ public class hashMap<K, V> {
 
     //region Поля
 
-    private Bucket[] buckets;
+     Bucket[] buckets;
     private int size;
 
     //endregion
 
     //region Константы
 
-    private static final int INIT_BUKET_COUNT = 16;
+    private static final int INIT_BUKET_COUNT = 4;
     private static final double LOAD_FACTOR = 0.5;
+
 
     //endregion
 
