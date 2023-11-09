@@ -34,16 +34,18 @@ public class hashMap<K, V> implements Iterable<hashMap.Entity>{
         private int currentIndex;
         private Bucket.Node currentNode;
         private Bucket[] buckets;
+        private int stop;
 
         public HashMapIterator(Bucket[] buckets) {
             this.buckets = buckets;
             this.currentNode = buckets[currentIndex].head;
             this.currentIndex = 0;
+            this.stop = 0;
         }
 
         @Override
         public boolean hasNext() {
-            if (currentIndex < buckets.length) {
+            if (currentIndex < buckets.length && stop != buckets.length - 1) {
                 return true;
             }
             return false;
@@ -58,12 +60,26 @@ public class hashMap<K, V> implements Iterable<hashMap.Entity>{
                     currentNode = currentNode.next;
                     return e;
                 } else {
-                    currentNode = buckets[currentIndex++].head;
+                    if (currentIndex != buckets.length - 1) {
+                        currentIndex++;
+                    } else {
+                        stop = currentIndex;
+                    }
+                    if (buckets[currentIndex] != null) {
+                        currentNode = buckets[currentIndex].head;
+                    }
                     Entity entity = new Entity((K) "null",(V) "null");
                     return entity;
                 }
             } else {
-                currentIndex++;
+                if (currentIndex != buckets.length - 1) {
+                    currentIndex++;
+                } else {
+                    stop = currentIndex;
+                }
+                if (buckets[currentIndex] != null) {
+                    currentNode = buckets[currentIndex].head;
+                }
                 Entity entity = new Entity((K) "null",(V) "null");
                 return entity;
             }
