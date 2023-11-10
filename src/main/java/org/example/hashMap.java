@@ -45,7 +45,7 @@ public class hashMap<K, V> implements Iterable<hashMap.Entity>{
 
         @Override
         public boolean hasNext() {
-            if (currentIndex < buckets.length && stop != buckets.length - 1) {
+            if (stop != buckets.length - 1) {
                 return true;
             }
             return false;
